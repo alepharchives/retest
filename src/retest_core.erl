@@ -47,7 +47,12 @@ run(Args) ->
             merge_options(Options),
 
             %% Make sure crypto is running
-            ok = crypto:start(),
+            case application:load(crypto) of
+                {error, _} ->
+                    ok;
+                _ ->
+                    crypto:start()
+            end,
 
             %% Scan the list of targets and identify the specific test
             %% files
