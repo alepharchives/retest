@@ -27,7 +27,7 @@
 -module(retest_sh).
 
 -export([run/2,
-         stop/1,
+         stop/1, kill/1,
          stop_all/0,
          expect/2, expect/3,
          send/2]).
@@ -73,6 +73,12 @@ run(Cmd, Opts) ->
         false ->
             acc_loop(Port, [])
     end.
+
+kill(Ref) ->
+    #sh { pid = Pid } = erlang:get(Ref),
+    ?DEBUG("Killing ~s~n", [Pid]),
+    _ = os:cmd(?FMT("kill -9 ~s", [Pid])),
+    ok.
 
 stop(Ref) ->
     #sh { pid = Pid, port = Port } = erlang:get(Ref),
