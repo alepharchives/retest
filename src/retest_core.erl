@@ -147,6 +147,12 @@ run_tests([]) ->
 run_tests([TestFile | Rest]) ->
     %% Load retest.config if it exists
     Config = retest_config:new(filename:dirname(TestFile)),
+    Timeout = case retest_config:get(Config, timeout) of
+                  undefined -> 
+                      30000;
+                  Other ->
+                      Other
+              end,
 
     %% Compile/load the module
     Module = load_test(TestFile),
@@ -168,8 +174,8 @@ run_tests([TestFile | Rest]) ->
         {'DOWN', Mref, process, Pid, Reason} ->
             ?ABORT("Test ~p failed: ~p\n", [Module, Reason])
 
-    after 30000 ->
-            ?ABORT("Test ~p timed out.\n", [Module])
+    after Timeout ->
+        ?ABORT("Test ~p timed out.\n", [Module])
     end.
 
 
