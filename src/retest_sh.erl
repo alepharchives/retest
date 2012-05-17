@@ -78,12 +78,15 @@ kill(Ref) ->
     #sh { pid = Pid } = erlang:get(Ref),
     ?DEBUG("Killing ~s~n", [Pid]),
     _ = os:cmd(?FMT("kill -9 ~s", [Pid])),
+    erlang:put(Ref, undefined),
     ok.
 
 stop(Ref) ->
     #sh { pid = Pid, port = Port } = erlang:get(Ref),
     _ = os:cmd(?FMT("kill ~s", [Pid])),
-    exit_loop(Port).
+    Result = exit_loop(Port),
+    erlang:put(Ref, undefined),
+    Result.
 
 stop_all() ->
     shutdown(fun stop/1).
