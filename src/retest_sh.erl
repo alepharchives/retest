@@ -86,9 +86,10 @@ stop(Ref) ->
     exit_loop(Port).
 
 stop_all() ->
-    _ = [ {ok, _} = stop(Ref) || {Ref, Sh} <- erlang:get(),
-                                 is_record(Sh, sh)],
-    ok.
+    shutdown(fun stop/1).
+
+kill_all() ->
+    shutdown(fun kill/1).
 
 expect(Ref, Regex) ->
     expect(Ref, Regex, []).
@@ -106,6 +107,11 @@ send(Ref, Line) ->
 %% ====================================================================
 %% Internal functions
 %% ====================================================================
+
+shutdown(F) ->
+    _ = [ {ok, _} = F(Ref) || {Ref, Sh} <- erlang:get(),
+                                 is_record(Sh, sh)],
+    ok.
 
 read_pid(Port) ->
     receive
