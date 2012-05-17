@@ -222,7 +222,7 @@ run_test(_Config, Module, TestFile, TargetDir) ->
 
 cleanup_sh() ->
     ?DEBUG("Cleaning up: ~p\n", [erlang:get()]),
-    retest_sh:stop_all().
+    retest_sh:kill_all().
 
 
 load_test(TestFile) ->

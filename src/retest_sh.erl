@@ -28,7 +28,7 @@
 
 -export([run/2,
          stop/1, kill/1,
-         stop_all/0,
+         stop_all/0, kill_all/0,
          expect/2, expect/3,
          send/2]).
 
@@ -112,7 +112,7 @@ send(Ref, Line) ->
 %% ====================================================================
 
 shutdown(F) ->
-    _ = [ {ok, _} = F(Ref) || {Ref, Sh} <- erlang:get(),
+    _ = [ _ = F(Ref) || {Ref, Sh} <- erlang:get(),
                                  is_record(Sh, sh)],
     ok.
 
